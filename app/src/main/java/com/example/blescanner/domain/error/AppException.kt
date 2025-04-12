@@ -6,15 +6,15 @@ import java.util.concurrent.TimeoutException
 
 sealed class AppException : Exception() {
     object NoInternet : AppException() {
-        private fun readResolve(): Any = NoInternet
+        fun readResolve(): Any = NoInternet
     }
 
     object Timeout : AppException() {
-        private fun readResolve(): Any = Timeout
+        fun readResolve(): Any = Timeout
     }
 
     object BluetoothUnavailable  : AppException() {
-        private fun readResolve(): Any = BluetoothUnavailable
+        fun readResolve(): Any = BluetoothUnavailable
     }
 
     data class Unknown(override val cause: Throwable) : AppException()

@@ -12,16 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.blescanner.ui.components.RoundedButton
-import com.example.blescanner.utils.logCompositions
+import com.example.blescanner.ui.components.SimpleButton
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    logCompositions("MainScreen")
-
-    val showAlert = remember { mutableStateOf(false) }
+    val isScanning = remember { mutableStateOf(false) }
     val buttonText = remember { mutableStateOf("Scan") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -31,14 +28,14 @@ fun MainScreen(
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.headlineLarge
         )
-        RoundedButton(
+        SimpleButton(
             text = buttonText.value,
             onClick = viewModel::onStartScanClick,
             modifier = Modifier.padding(top = 16.dp)
         )
     }
 
-    if (showAlert.value) {
+    if (isScanning.value) {
         buttonText.value = "Stop Scan"
         viewModel.onStartScanClick()
     } else {
