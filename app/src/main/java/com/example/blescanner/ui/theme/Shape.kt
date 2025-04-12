@@ -1,0 +1,5 @@
+package com.example.blescanner.ui.theme
+
+import androidx.compose.material3.Shapes
+
+val AppShapes = Shapes()

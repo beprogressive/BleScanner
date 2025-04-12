@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.example.blescanner"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.example.blescanner"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.kotlinStdlib)
 
     implementation(libs.bundles.composeCore)
+    implementation(libs.appcompat)
     debugImplementation("androidx.compose.ui:ui-tooling:${libs.versions.compose.get()}")
 
     implementation(libs.bundles.networking)
