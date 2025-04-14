@@ -1,70 +1,61 @@
 package com.example.blescanner.ui
 
+import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blescanner.domain.models.Device
-import com.example.blescanner.domain.result.Result
-import com.example.blescanner.domain.usecases.GetBleDevices
-import com.example.blescanner.domain.usecases.StopScan
+import com.example.blescanner.domain.result.ScanResult
+import com.example.blescanner.domain.usecases.GetBleDevicesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getBleDevices: GetBleDevices,
-    private val stopScan: StopScan
+    private val getBleDevicesUseCase: GetBleDevicesUseCase,
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
-    val state = _state.asStateFlow()
+    private val _devices = MutableStateFlow<List<Device>>(emptyList())
+    val devices: StateFlow<List<Device>> = _devices
 
-    init {
-        Timber.d("MainViewModel initialized")
-    }
+    private val _scanState = MutableStateFlow<ScanState>(ScanState.Idle)
+    val scanState = _scanState.asStateFlow()
 
-    fun onStartScanClick() {
-        Timber.d("Button clicked")
-        _state.value = ScreenState.Loading
+    @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
+    fun startScan() {
+        _devices.value = emptyList()
+        _scanState.value = ScanState.Scanning
         viewModelScope.launch {
-            getBleDevices()
-                .map { result ->
-                    if (result is Result.Success) {
-                        Result.Success(result.data.sortedBy {
-                            it.rssi
-                        }.toSet())
-                    } else
-                        result
-                }
-                .collect { result ->
-                    when (result) {
-                        is Result.Success -> {
-                            Timber.d("Success: ${result.data}")
-                            _state.value = ScreenState.Success(result.data)
-                        }
+            getBleDevicesUseCase.startScan().collect { result ->
+                when (result) {
+                    is ScanResult.Success -> {
+                        _devices.value = result.devices
+                        _scanState.value = ScanState.Scanning
+                    }
 
-                        is Result.Error -> {
-                            Timber.e("Error: ${result.error}")
-                            _state.value =
-                                ScreenState.Error(result.error.message ?: "Unknown error")
-                        }
+                    is ScanResult.Error -> {
+                        _scanState.value = ScanState.Error(result.error.message ?: "Unknown error")
+                    }
+
+                    is ScanResult.Finished -> {
+                        _scanState.value = ScanState.Finished
                     }
                 }
-
-            // Stop scanning after 10 seconds
-            delay(10_000)
-            stopScan()
+            }
         }
+    }
+
+    fun stopScan() {
+        getBleDevicesUseCase.stopScan()
     }
 }
 
-sealed class ScreenState {
-    object Loading : ScreenState()
-    data class Success(val devices: Set<Device>) : ScreenState()
-    data class Error(val message: String) : ScreenState()
+sealed class ScanState {
+    object Idle : ScanState()
+    object Scanning : ScanState()
+    object Finished : ScanState()
+    data class Error(val message: String) : ScanState()
 }
