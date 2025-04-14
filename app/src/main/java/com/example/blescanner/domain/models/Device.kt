@@ -1,3 +1,3 @@
 package com.example.blescanner.domain.models
 
-data class Device(val address: String, val name: String, val rssi: Int)
+data class Device(val address: String, var name: String, var rssi: Int)
