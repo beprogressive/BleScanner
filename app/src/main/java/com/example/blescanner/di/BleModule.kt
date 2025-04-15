@@ -28,18 +28,16 @@ abstract class BleModule {
         @Provides
         fun provideBluetoothManager(
             @ApplicationContext context: Context
-        ): BluetoothManager {
+        ): BluetoothManager? {
             return context.getSystemService(BluetoothManager::class.java)
-                ?: throw IllegalStateException("BluetoothManager not available")
         }
 
         @Singleton
         @Provides
         fun provideBluetoothAdapter(
-            bluetoothManager: BluetoothManager
-        ): BluetoothAdapter {
-            return bluetoothManager.adapter
-                ?: throw IllegalStateException("BluetoothAdapter not available")
+            bluetoothManager: BluetoothManager?
+        ): BluetoothAdapter? {
+            return bluetoothManager?.adapter
         }
     }
 }
