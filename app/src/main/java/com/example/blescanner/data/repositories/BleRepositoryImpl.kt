@@ -72,4 +72,31 @@ class BleRepositoryImpl @Inject constructor(
         scanner?.stopScan(scanCallback)
         scanCallback = null
     }
+
+    override fun connectToDevice(device: Device): Flow<Result<Unit>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun disconnectFromDevice(device: Device): Flow<Result<Unit>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun readCharacteristic(
+        device: Device,
+        characteristicUuid: String
+    ): Flow<Result<ByteArray>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun readAllCharacteristics(device: Device): Flow<Result<Map<String, ByteArray>>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun writeCharacteristic(
+        device: Device,
+        characteristicUuid: String,
+        data: ByteArray
+    ): Flow<Result<Unit>> {
+        TODO("Not yet implemented")
+    }
 }
