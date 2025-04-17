@@ -4,6 +4,9 @@ import android.Manifest
 import android.os.Build
 
 object Permissions {
+    /**
+     * Provides Bluetooth permission sets based on Android version requirements.
+     */
     val bluetoothPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         listOf(
             Manifest.permission.BLUETOOTH_SCAN,

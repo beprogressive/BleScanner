@@ -14,6 +14,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.blescanner.domain.models.Device
 
+/**
+ * Displays a list of BLE devices with their names and signal strength.
+ *
+ * @param deviceList List of devices to display
+ */
 @Composable
 fun ColumnScope.DeviceList(deviceList: List<Device>) {
 

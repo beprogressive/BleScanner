@@ -14,6 +14,12 @@ import com.example.blescanner.ui.components.MainScreenContent
 import com.example.blescanner.ui.components.RequestPermissions
 import com.example.blescanner.utils.Permissions.bluetoothPermissions
 
+/**
+ * Main screen of the application displaying BLE device scanning functionality.
+ * Handles permission requests and displays scan results.
+ *
+ * @param viewModel ViewModel providing scan state and device data
+ */
 @SuppressLint("MissingPermission")
 @Composable
 fun MainScreen(

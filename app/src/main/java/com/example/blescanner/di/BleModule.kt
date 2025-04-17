@@ -13,6 +13,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Provides Bluetooth-related dependencies for the application.
+ * Configures how Bluetooth services and adapters are injected.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class BleModule {
