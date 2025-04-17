@@ -1,5 +1,6 @@
 package com.example.blescanner.ui
 
+import android.annotation.SuppressLint
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,7 +14,7 @@ import com.example.blescanner.ui.components.MainScreenContent
 import com.example.blescanner.ui.components.RequestPermissions
 import com.example.blescanner.utils.Permissions.bluetoothPermissions
 
-@RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
+@SuppressLint("MissingPermission")
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
