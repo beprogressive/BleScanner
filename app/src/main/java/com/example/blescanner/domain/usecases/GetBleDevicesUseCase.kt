@@ -18,11 +18,16 @@ import javax.inject.Inject
 class GetBleDevicesUseCase @Inject constructor(
     private val repository: BleRepository
 ) {
+
+    private companion object {
+        const val SCAN_TIMEOUT = 10_000L
+    }
+
     private var scanJob: Job? = null
     private var autoStopJob: Job? = null
 
     @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
-    fun startScan(timeout: Long = 10_000L): Flow<ScanResult> = channelFlow {
+    fun startScan(timeout: Long = SCAN_TIMEOUT): Flow<ScanResult> = channelFlow {
         Timber.d("startScan")
         val devices = mutableListOf<Device>()
 
