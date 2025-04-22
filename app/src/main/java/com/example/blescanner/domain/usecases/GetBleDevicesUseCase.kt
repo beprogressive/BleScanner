@@ -16,6 +16,12 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
+
+/**
+ * Use case for scanning BLE devices.
+ *
+ * @property repository The repository to interact with BLE devices.
+ */
 class GetBleDevicesUseCase @Inject constructor(
     private val repository: BleRepository
 ) {
@@ -27,6 +33,13 @@ class GetBleDevicesUseCase @Inject constructor(
     private var scanJob: Job? = null
     private var autoStopJob: Job? = null
 
+
+    /**
+     * Starts scanning for BLE devices.
+     *
+     * @param timeout The duration to scan for devices in milliseconds. Default is 10 seconds.
+     * @return A flow of [ScanResult] containing the scanned devices or errors.
+     */
     @RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
     fun startScan(timeout: Long = SCAN_TIMEOUT): Flow<ScanResult> = channelFlow {
         Timber.d("startScan")
@@ -71,6 +84,9 @@ class GetBleDevicesUseCase @Inject constructor(
         }
     }
 
+    /**
+     * Stops scanning for BLE devices and cancels any ongoing scan jobs.
+     */
     fun stopScan() {
         scanJob?.cancel()
         autoStopJob?.cancel()
