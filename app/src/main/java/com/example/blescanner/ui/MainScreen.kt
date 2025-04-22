@@ -1,12 +1,12 @@
 package com.example.blescanner.ui
 
 import android.annotation.SuppressLint
-import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,56 +20,49 @@ import com.example.blescanner.utils.Permissions.bluetoothPermissions
  *
  * @param viewModel ViewModel providing scan state and device data
  */
+
 @SuppressLint("MissingPermission")
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel()
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
 ) {
-    val state = viewModel.scanState.collectAsStateWithLifecycle()
-    val deviceList = viewModel.devices.collectAsStateWithLifecycle()
-    var isScanning by remember { mutableStateOf(false) }
-    val startScanning = remember { mutableStateOf(false) }
+    val scanState by viewModel.scanState.collectAsStateWithLifecycle()
+    val deviceList by viewModel.devices.collectAsStateWithLifecycle()
 
-    when (state.value) {
-        is ScanState.Error -> {
-            isScanning = false
-        }
-
-        is ScanState.Scanning -> {
-            isScanning = true
-        }
-
-        is ScanState.Finished -> {
-            isScanning = false
-        }
-
-        ScanState.Idle -> Unit
-    }
+    var requestPermissionsTrigger by remember { mutableStateOf(false) }
 
     MainScreenContent(
-        isScanning = isScanning,
-        deviceList = deviceList.value,
+        scanState = scanState,
+        deviceList = deviceList,
+        modifier = modifier,
         onScanClick = {
-            if (isScanning) {
-                viewModel.stopScan()
-            } else {
-                startScanning.value = true
+            when (scanState) {
+                is ScanState.Scanning -> {
+                    viewModel.stopScan()
+                }
+
+                else -> {
+                    requestPermissionsTrigger = true
+                }
             }
         }
     )
 
-    if (startScanning.value) {
-        RequestPermissions(permissions = bluetoothPermissions, onGranted = {
-            viewModel.startScan()
-            startScanning.value = false
-        }, onRejected = {
-            startScanning.value = false
-        })
+    if (requestPermissionsTrigger) {
+        RequestPermissions(
+            permissions = bluetoothPermissions,
+            onGranted = {
+                viewModel.startScan()
+                requestPermissionsTrigger = false
+            },
+            onRejected = {
+                requestPermissionsTrigger = false
+            }
+        )
     }
-
 }
 
-@RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN)
 @Composable
 @Preview(showBackground = true)
 fun PreviewMainScreen() {

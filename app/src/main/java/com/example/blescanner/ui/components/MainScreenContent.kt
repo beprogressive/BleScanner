@@ -14,11 +14,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.blescanner.R
 import com.example.blescanner.domain.models.Device
+import com.example.blescanner.ui.ScanState
 
 @Composable
-fun MainScreenContent(isScanning: Boolean, deviceList: List<Device>, onScanClick: () -> Unit) {
+fun MainScreenContent(
+    modifier: Modifier = Modifier,
+    scanState: ScanState,
+    deviceList: List<Device>,
+    onScanClick: () -> Unit,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -31,10 +37,24 @@ fun MainScreenContent(isScanning: Boolean, deviceList: List<Device>, onScanClick
             textAlign = TextAlign.Center
         )
 
+        if (scanState is ScanState.Error) {
+            Text(
+                text = "Error: ${scanState.message}",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         DeviceList(deviceList = deviceList)
 
+        val buttonText = when (scanState) {
+            is ScanState.Scanning -> "Stop Scan"
+            else -> "Scan"
+        }
+
         SimpleButton(
-            text = if (isScanning) "Stop Scan" else "Scan",
+            text = buttonText,
             onClick = onScanClick,
             modifier = Modifier.padding(top = 16.dp)
         )
