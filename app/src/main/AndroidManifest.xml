@@ -17,12 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:name="com.example.blescanner.BleScannerApp"
-        android:theme="@style/Theme.MyApplication"
+        android:theme="@style/Theme.BleScanner"
         tools:targetApi="31">
         <activity
             android:name="com.example.blescanner.ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyApplication">
+            android:theme="@style/Theme.BleScanner">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
